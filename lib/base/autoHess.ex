@@ -56,7 +56,7 @@ defmodule enlso.base.hess do
         for i <- 1..p, do: Enum.at(H, i) = Enum.at(h,i)|>Enum.zip(mu_list)|>Enum.map(fn(x) -> elem(x,0)/elem(x,1) end)
     end
 
-    def hess(f, x, type \\ "central") do
+    def hess!(f, x, type \\ "central") do
     @doc """
     the main part
     """    
