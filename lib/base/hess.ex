@@ -13,21 +13,21 @@ defmodule enlso.base.hess do
         mu = 2 * Math.sqrt(1.0e-12) * (1+Grad.norm(x))
         diff = List.duplicate(0.0, p) |> List.duplicate(p)
 
-        for j <- 1..p do
+        for j <- 0..p-1 do
             e_j = List.duplicate(0.0, p)
             Enum.at(e_j, j) = 1.0
             g = mu |> List.duplicate(p) |> Enum.zip(e_j) |>
                 Enum.map(fn(x) -> elem(x, 0)*elem(x, 1) end) |>
                 Enum.zip(x) |> Enum.map(fn(x) -> elem(x, 0)+elem(x, 1) end) |> Grad.grad(f,"finite")
-            for i <- 1..p, do: diff |> Enum.at(i) |> List.replace_at(j, g|>Enum.at(i))
+            for i <- 0..p-1, do: diff |> Enum.at(i) |> List.replace_at(j, g|>Enum.at(i))
         end
         rep_g = List.duplicate(0, p) |> List.duplicate(p)
-        for i <- 1..p, do: rep_g |> List.replace_at(i, g|>Enum.at(i)|>List.duplicate(p))
+        for i <- 0..p-1, do: rep_g |> List.replace_at(i, g|>Enum.at(i)|>List.duplicate(p))
         mu_list = List.duplicate(mu, p)
         h = diff |> Enum.zip(rep_g) |> Enum.map(fn(x) -> Tuple.to_list(x) end) |> 
                     Enum.map(fn(x) -> x|>Enum.at(0)|>Enum.zip(x|>Enum.at(1))|>Enum.map(fn(x)-> elem(x,0)-elem(x,1) end) end)
         H = List.duplicate(0, p) |> List.duplicate(p)
-        for i <- 1..p, do: Enum.at(H, i) = Enum.at(h,i)|>Enum.zip(mu_list)|>Enum.map(fn(x) -> elem(x,0)/elem(x,1) end)
+        for i <- 0..p-1, do: Enum.at(H, i) = Enum.at(h,i)|>Enum.zip(mu_list)|>Enum.map(fn(x) -> elem(x,0)/elem(x,1) end)
     end
 
     defp centralHess(f, x) do
@@ -39,7 +39,7 @@ defmodule enlso.base.hess do
         diff1 = List.duplicate(0.0, p) |> List.duplicate(p)
         diff2 = List.duplicate(0.0, p) |> List.duplicate(p)
         
-        for j<- 1..p do
+        for j<- 0..p-1 do
             e_j = List.duplicate(0.0, p)
             Enum.at(e_j, j) = 1.0
             g1 = mu |> List.duplicate(p) |> Enum.zip(e_j) |>
@@ -53,10 +53,10 @@ defmodule enlso.base.hess do
         h = diff1 |> Enum.zip(diff2) |> Enum.map(fn(x) -> Tuple.to_list(x) end) |> 
                     Enum.map(fn(x) -> x|>Enum.at(0)|>Enum.zip(x|>Enum.at(1))|>Enum.map(fn(x)-> elem(x,0)-elem(x,1) end) end)
         H = List.duplicate(0, p) |> List.duplicate(p)
-        for i <- 1..p, do: Enum.at(H, i) = Enum.at(h,i)|>Enum.zip(mu_list)|>Enum.map(fn(x) -> elem(x,0)/elem(x,1) end)
+        for i <- 0..p-1, do: Enum.at(H, i) = Enum.at(h,i)|>Enum.zip(mu_list)|>Enum.map(fn(x) -> elem(x,0)/elem(x,1) end)
     end
 
-    def hess!(f, x, type \\ "central") do
+    def hess!(x, f, type \\ "central") do
     @doc """
     the main part
     """    

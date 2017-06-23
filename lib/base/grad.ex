@@ -14,11 +14,11 @@ defmodule elsno.base.grad do
         mu = 2 * Math.sqrt(1.0e-12) * (1+norm(x))
         diff = List.duplicate(0.0, p)
         
-        for j <- 0..p do
+        for j <- 0..p-1 do
             e_j = List.duplicate(0.0, p)
             Enum.at(e_j, j) = 1.0
             Enum.at(diff, j) = mu |> List.duplicate(p) |> Enum.zip(e_j) |>
-                Enum.map(fn(x) -> Enum.at(x, 0)*Enum.at(x, 1) end) |>
+                Enum.map(fn(x) -> elem(x, 0)*elem(x, 1) end) |>
                 Enum.zip(x) |> Enum.map(fn(x) -> elem(x, 0)+elem(x, 1) end) |> f
         end
         mu_list = List.duplicate(mu, p)
@@ -35,7 +35,7 @@ defmodule elsno.base.grad do
         diff1 = List.duplicate(0.0, p)
         diff2 = List.duplicate(0.0, p)
         
-        for j <- 1..p do
+        for j <- 0..p-1 do
             e_j = List.duplicate(0.0, p)
             Enum.at(e_j, j) = 1.0
             Enum.at(diff1, j) = mu |> List.duplicate(p) |> Enum.zip(e_j) |>
