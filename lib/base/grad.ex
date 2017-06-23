@@ -63,9 +63,9 @@ defmodule elsno.base.grad do
     """
         cond do
             String.equivalent?(type, "central") ->
-                centralDiff(f, x)
+                gradient = centralDiff(f, x)
             String.equivalent?(type, "finite") -> 
-                finiteDiff(f, x)
+                gradient = finiteDiff(f, x)
             _ ->
                 raise ArgumentError, message:"type is invalid"
 

@@ -62,9 +62,9 @@ defmodule enlso.base.hess do
     """    
         cond do
             String.equivalent?(type, "central") ->
-                centralHess(f, x)
+                hessian = centralHess(f, x)
             String.equivalent?(type, "finite") ->
-                finiteHess(f, x)
+                hessian = finiteHess(f, x)
             _ ->
                 raise ArgumentError, message:"type is invalid"
         end
