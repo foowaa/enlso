@@ -64,6 +64,7 @@ defmodule enlso.base.step do
             Wolfe_helper(grad, f, xk, dk, n, c1, c2, a, b)
         end
         if alpha > 1 do
+            # http://www.cultivatehq.com/posts/pseudo-random-number-generator-in-elixir/
             Random.seed(:os.timestamp)
             alpha = 0.01+0.09*Random.uniform
         else

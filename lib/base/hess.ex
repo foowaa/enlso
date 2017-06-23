@@ -26,8 +26,8 @@ defmodule enlso.base.hess do
         mu_list = List.duplicate(mu, p)
         h = diff |> Enum.zip(rep_g) |> Enum.map(fn(x) -> Tuple.to_list(x) end) |> 
                     Enum.map(fn(x) -> x|>Enum.at(0)|>Enum.zip(x|>Enum.at(1))|>Enum.map(fn(x)-> elem(x,0)-elem(x,1) end) end)
-        H = List.duplicate(0, p) |> List.duplicate(p)
-        for i <- 0..p-1, do: Enum.at(H, i) = Enum.at(h,i)|>Enum.zip(mu_list)|>Enum.map(fn(x) -> elem(x,0)/elem(x,1) end)
+        hessian = List.duplicate(0, p) |> List.duplicate(p)
+        for i <- 0..p-1, do: Enum.at(hessian, i) = Enum.at(h,i)|>Enum.zip(mu_list)|>Enum.map(fn(x) -> elem(x,0)/elem(x,1) end)
     end
 
     defp centralHess(f, x) do
@@ -52,8 +52,8 @@ defmodule enlso.base.hess do
         mu_list = List.duplicate(2*mu, p)
         h = diff1 |> Enum.zip(diff2) |> Enum.map(fn(x) -> Tuple.to_list(x) end) |> 
                     Enum.map(fn(x) -> x|>Enum.at(0)|>Enum.zip(x|>Enum.at(1))|>Enum.map(fn(x)-> elem(x,0)-elem(x,1) end) end)
-        H = List.duplicate(0, p) |> List.duplicate(p)
-        for i <- 0..p-1, do: Enum.at(H, i) = Enum.at(h,i)|>Enum.zip(mu_list)|>Enum.map(fn(x) -> elem(x,0)/elem(x,1) end)
+        hessian = List.duplicate(0, p) |> List.duplicate(p)
+        for i <- 0..p-1, do: Enum.at(hessian, i) = Enum.at(h,i)|>Enum.zip(mu_list)|>Enum.map(fn(x) -> elem(x,0)/elem(x,1) end)
     end
 
     def hess!(x, f, type \\ "central") do
