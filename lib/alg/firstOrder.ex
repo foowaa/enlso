@@ -1,9 +1,9 @@
-import enlso.base.grad
-alias enlso.base.grad, as Grad
-import enlso.base.step
-alias enlso.base.step, as Step
+import Enlso.Base.Grad
+alias Enlso.Base.Grad, as Grad
+import Enlso.Base.Step
+alias Enlso.Base.Step, as Step
 import Matrix
-defmodule enlso.alg.firstOrder do
+defmodule Enlso.Alg.FirstOrder do
     @moduledoc """
     first order optimization: gradient descent, conjugate gradient, BFGS
     """

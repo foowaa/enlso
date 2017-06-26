@@ -1,13 +1,13 @@
-import enlso.base.grad
-alias enlso.base.grad, as Grad
-import enlso.base.hess
-alias enlso.base.hess, as Hess
-import enlso.base.step
-alias enlso.base.step, as Step
+import Enlso.Base.Grad
+alias Enlso.Base.Grad, as Grad
+import Enlso.Base.Hess
+alias Enlso.Base.Hess, as Hess
+import Enlso.Base.Step
+alias Enlso.Base.Step, as Step
 alias :math, as Math
 import Matrix
 
-defmodule enlso.alg.secondOrder do
+defmodule Enlso.Alg.SecondOrder do
     @moduledoc """
     second order optimization: Newton method
     """

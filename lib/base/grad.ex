@@ -1,5 +1,5 @@
 alias :math, as: Math
-defmodule elsno.base.grad do
+defmodule Enlso.Base.Grad do
 
  @moduledoc """
  An implementation of auto grad

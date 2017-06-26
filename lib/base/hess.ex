@@ -1,7 +1,7 @@
 alias :math, as Math 
-import enlso.base.grad 
-alias enlso.base.grad, as Grad
-defmodule enlso.base.hess do
+import Enlso.Base.Grad 
+alias Enlso.Base.Grad, as Grad
+defmodule Enlso.Base.Hess do
  @moduledoc """
  An implementation of auto hess
  """
