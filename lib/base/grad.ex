@@ -7,7 +7,18 @@ defmodule Enlso.Base.Grad do
 
     defp finiteDiff(f, x) do
     @doc """
-    finite differencing
+    finite differencing, see: https://en.wikipedia.org/wiki/Finite_difference
+
+    ## Parameters
+
+     - f: function
+     - x: list, the diff point
+
+    ## Examples
+
+       iex> f = fn(x) x|>Enum.zip(x)|>Enum.map(fn(x)->elem(x,0)*elem(x,1) end)|>Enum.sum
+       iex> Enlso.Base.Grad.finiteDiff(f, [1,2,3])
+       [2,4,6]
     """
         p = length(x)
         y = Enum.map(x, f)
@@ -16,10 +27,10 @@ defmodule Enlso.Base.Grad do
         
         for j <- 0..p-1 do
             e_j = List.duplicate(0.0, p)
-            Enum.at(e_j, j) = 1.0
-            Enum.at(diff, j) = mu |> List.duplicate(p) |> Enum.zip(e_j) |>
+            e_j|>List.replace_at(j, 1.0)
+            diff|>List.replace_at(j, mu |> List.duplicate(p) |> Enum.zip(e_j) |>
                 Enum.map(fn(x) -> elem(x, 0)*elem(x, 1) end) |>
-                Enum.zip(x) |> Enum.map(fn(x) -> elem(x, 0)+elem(x, 1) end) |> f
+                Enum.zip(x) |> Enum.map(fn(x) -> elem(x, 0)+elem(x, 1) end) |> f)
         end
         mu_list = List.duplicate(mu, p)
         g = y |> List.duplicate(p) |> Enum.zip(diff) |> Enum.map(fn(x) -> elem(x, 1)-elem(x, 0) end) |>
@@ -28,7 +39,12 @@ defmodule Enlso.Base.Grad do
 
     defp centralDiff(f, x) do
     @doc """
-    central differencing
+    central differencing, see: http://mathworld.wolfram.com/CentralDifference.html
+
+    ## Parameters:
+
+       - f: function
+       - x: list, the diff point
     """
         p = length(x)
         mu = 2 * Math.sqrt(1.0e-12) * (1+norm(x))
@@ -37,13 +53,13 @@ defmodule Enlso.Base.Grad do
         
         for j <- 0..p-1 do
             e_j = List.duplicate(0.0, p)
-            Enum.at(e_j, j) = 1.0
-            Enum.at(diff1, j) = mu |> List.duplicate(p) |> Enum.zip(e_j) |>
+            e_j|>List.replace_at(j, 1.0)
+            diff1 |> List.replace_at(j, mu |> List.duplicate(p) |> Enum.zip(e_j) |>
                 Enum.map(fn(x) -> elem(x, 0)*elem(x, 1) end) |>
-                Enum.zip(x) |> Enum.map(fn(x) -> elem(x, 1)+elem(x, 0) end) |> f
-            Enum.at(diff2, j) = mu |> List.duplicate(p) |> Enum.zip(e_j) |>
+                Enum.zip(x) |> Enum.map(fn(x) -> elem(x, 1)+elem(x, 0) end) |> f)
+            diff2 |> List.replace_at(j, mu |> List.duplicate(p) |> Enum.zip(e_j) |>
                 Enum.map(fn(x) -> elem(x, 0)*elem(x, 1) end) |>
-                Enum.zip(x) |> Enum.map(fn(x) -> elem(x, 1)-elem(x, 0) end) |> f      
+                Enum.zip(x) |> Enum.map(fn(x) -> elem(x, 1)-elem(x, 0) end) |> f)      
         end
         mu_list = List.duplicate(2*mu, p)
         g = diff1 |> Enum.zip(diff2) |> Enum.map(fn(x) -> elem(x, 0)-elem(x, 1) end) |> Enum.zip(mu_list) |>
