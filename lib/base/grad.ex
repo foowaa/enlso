@@ -11,14 +11,8 @@ defmodule Enlso.Base.Grad do
 
     ## Parameters
 
-     - f: function
+     - f: function handler
      - x: list, the diff point
-
-    ## Examples
-
-       iex> f = fn(x) x|>Enum.zip(x)|>Enum.map(fn(x)->elem(x,0)*elem(x,1) end)|>Enum.sum
-       iex> Enlso.Base.Grad.finiteDiff(f, [1,2,3])
-       [2,4,6]
     """
         p = length(x)
         y = Enum.map(x, f)
@@ -43,7 +37,7 @@ defmodule Enlso.Base.Grad do
 
     ## Parameters:
 
-       - f: function
+       - f: function handler
        - x: list, the diff point
     """
         p = length(x)
@@ -69,6 +63,10 @@ defmodule Enlso.Base.Grad do
     def norm(x) do
     @doc """
     l2 norm
+
+    ## Parameters:
+
+       - x: List
     """
          Enum.reduce(x, &(&1*&1)) |> Math.sqrt
     end
@@ -76,6 +74,20 @@ defmodule Enlso.Base.Grad do
     def grad!(x, f, type \\ "central") do
     @doc """
     the main part
+
+    ## Parameters:
+       
+       - x: list, the diff point
+       - f: function handler
+       - type: string which determines the method to calculate the diff, default is central.
+
+    ## Examples
+
+    iex> f = fn(x) x|>Enum.zip(x)|>Enum.map(fn(x)->elem(x,0)*elem(x,1) end)|>Enum.sum
+    iex> Enlso.Base.Grad.grad(f, [1,2,3], "finite")
+    [2.00,4.00,6.00]
+    iex> Enlso.Base.Grad.grad(f, [1,2,3])
+    [2.00,4.00,6.00]
     """
         cond do
             String.equivalent?(type, "central") ->
@@ -84,7 +96,6 @@ defmodule Enlso.Base.Grad do
                 gradient = finiteDiff(f, x)
             _ ->
                 raise ArgumentError, message:"type is invalid"
-
         end
     end
 
