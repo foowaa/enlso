@@ -6,7 +6,7 @@ defmodule Enlso.Base.Grad do
 
     defp finiteDiff(f, x) do
         p = length(x)
-        y = Enum.map(x, f)
+        y = f.(x)
         mu = 2 * Math.sqrt(1.0e-12) * (1+norm(x))
         diff = List.duplicate(0.0, p)
         
@@ -51,7 +51,7 @@ defmodule Enlso.Base.Grad do
     - x: List
     """
     def norm(x) do
-         Enum.reduce(x, &(&1*&1)) |> Math.sqrt
+         Enum.map(x, &(&1*&1)) |> Enum.sum |> Math.sqrt
     end
 
     @doc """
@@ -68,9 +68,9 @@ defmodule Enlso.Base.Grad do
     ## Example
 
     iex> f = fn(x) -> x|>Enum.zip(x)|>Enum.map(fn(x)->elem(x,0)*elem(x,1) end)|>Enum.sum end
-    iex> Enlso.Base.Grad.grad!(f, [1,2,3], "finite")
+    iex> Enlso.Base.Grad.grad!([1,2,3], f, "finite")
     [2.00,4.00,6.00]
-    iex> Enlso.Base.Grad.grad!(f, [1,2,3])
+    iex> Enlso.Base.Grad.grad!([1,2,3], f)
     [2.00,4.00,6.00]
     """
     def grad!(x, f, type \\ "central") do
