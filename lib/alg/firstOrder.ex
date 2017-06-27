@@ -4,13 +4,21 @@ import Enlso.Base.Step
 alias Enlso.Base.Step, as Step
 import Matrix
 defmodule Enlso.Alg.FirstOrder do
-    @moduledoc """
-    first order optimization: gradient descent, conjugate gradient, BFGS
-    """
+        @moduledoc """
+        first order optimization: gradient descent, conjugate gradient, BFGS
+        """
     def gd(f, x0, nmax \\ 5000, epsilon \\ 1.0e-5) do
-    @doc """
-    naive gradient descet. See https://en.wikipedia.org/wiki/Gradient_descent
-    """
+        @doc """
+        naive gradient descet. See https://en.wikipedia.org/wiki/Gradient_descent
+        
+        ## Parameters:
+
+        - f: function handler
+        - x0: initial point
+        - nmax: the max round
+        - epsilon: the break condition
+
+        """
         grad = Grad.grad!(x0, f)
         d = grad|>Enum.map(&(-1*&1))
         result = gd_helper(f, x0, nmax, epsilon, d, grad, n)
@@ -31,9 +39,16 @@ defmodule Enlso.Alg.FirstOrder do
     end
 
     def cg(f, x0, nmax \\ 5000, epsilon \\ 1.0e-5) do
-    @doc """
-    conjugate gradient. See https://en.wikipedia.org/wiki/Conjugate_gradient_method
-    """
+        @doc """
+        conjugate gradient. See https://en.wikipedia.org/wiki/Conjugate_gradient_method
+
+        ## Parameters:
+
+        - f: function handler
+        - x0: initial point
+        - nmax: the max round
+        - epsilon: the break condition
+        """
         grad = Grad.grad!(x0, f)
         d = grad|>Enum.map(&(-1*&1))
         n = 0
@@ -60,9 +75,16 @@ defmodule Enlso.Alg.FirstOrder do
     end
 
     def bfgs(f, x0, nmax \\ 5000, epsilon \\ 1.0e-5) do
-    @doc """
-    Broyden-Fletcher-Goldfarb-Shanno (BFGS). See https://en.wikipedia.org/wiki/Broyden–Fletcher–Goldfarb–Shanno_algorithm
-    """  
+        @doc """
+        Broyden-Fletcher-Goldfarb-Shanno (BFGS). See https://en.wikipedia.org/wiki/Broyden–Fletcher–Goldfarb–Shanno_algorithm
+
+        ## Parameters:
+
+        - f: function handler
+        - x0: initial point
+        - nmax: the max round
+        - epsilon: the break condition
+        """  
         x = List.duplicate(0, length(x0))
         # https://github.com/twist-vector/elixir-matrix
         b_matrix = Matrix.indent(length(x0))

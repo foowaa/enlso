@@ -1,19 +1,18 @@
 alias :math, as: Math
 defmodule Enlso.Base.Grad do
-
- @moduledoc """
- An implementation of auto grad. See http://mathworld.wolfram.com/Gradient.html
- """
+    @moduledoc """
+    An implementation of auto grad. See http://mathworld.wolfram.com/Gradient.html
+    """
 
     defp finiteDiff(f, x) do
-    @doc """
-    finite differencing, see: http://mathworld.wolfram.com/FiniteDifference.html
+        @doc """
+        finite differencing, see: http://mathworld.wolfram.com/FiniteDifference.html
 
-    ## Parameters
+        ## Parameters
 
-     - f: function handler
-     - x: list, the diff point
-    """
+        - f: function handler
+        - x: list, the diff point
+        """
         p = length(x)
         y = Enum.map(x, f)
         mu = 2 * Math.sqrt(1.0e-12) * (1+norm(x))
@@ -32,14 +31,14 @@ defmodule Enlso.Base.Grad do
     end
 
     defp centralDiff(f, x) do
-    @doc """
-    central differencing, see: http://mathworld.wolfram.com/CentralDifference.html
+        @doc """
+        central differencing, see: http://mathworld.wolfram.com/CentralDifference.html
 
-    ## Parameters:
+        ## Parameters:
 
-       - f: function handler
-       - x: list, the diff point
-    """
+        - f: function handler
+        - x: list, the diff point
+        """
         p = length(x)
         mu = 2 * Math.sqrt(1.0e-12) * (1+norm(x))
         diff1 = List.duplicate(0.0, p)
@@ -61,34 +60,34 @@ defmodule Enlso.Base.Grad do
     end
 
     def norm(x) do
-    @doc """
-    l2 norm
+        @doc """
+        l2 norm
 
-    ## Parameters:
+        ## Parameters:
 
-       - x: List
-    """
+        - x: List
+        """
          Enum.reduce(x, &(&1*&1)) |> Math.sqrt
     end
 
     def grad!(x, f, type \\ "central") do
-    @doc """
-    the main part
+        @doc """
+        the main part
 
-    ## Parameters:
-       
-       - x: list, the diff point
-       - f: function handler
-       - type: string which determines the method to calculate the diff, default is central.
+        ## Parameters:
+        
+        - x: list, the diff point
+        - f: function handler
+        - type: string which determines the method to calculate the diff, default is central.
 
-    ## Examples
+        ## Examples
 
-    iex> f = fn(x) x|>Enum.zip(x)|>Enum.map(fn(x)->elem(x,0)*elem(x,1) end)|>Enum.sum
-    iex> Enlso.Base.Grad.grad!(f, [1,2,3], "finite")
-    [2.00,4.00,6.00]
-    iex> Enlso.Base.Grad.grad!(f, [1,2,3])
-    [2.00,4.00,6.00]
-    """
+        iex> f = fn(x) x|>Enum.zip(x)|>Enum.map(fn(x)->elem(x,0)*elem(x,1) end)|>Enum.sum
+        iex> Enlso.Base.Grad.grad!(f, [1,2,3], "finite")
+        [2.00,4.00,6.00]
+        iex> Enlso.Base.Grad.grad!(f, [1,2,3])
+        [2.00,4.00,6.00]
+        """
         cond do
             String.equivalent?(type, "central") ->
                 gradient = centralDiff(f, x)

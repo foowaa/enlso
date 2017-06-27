@@ -8,9 +8,16 @@ defmodule Enlso.Base.Step do
                                             https://en.wikipedia.org/wiki/Backtracking_line_search
     """
     def Armijo(grad, f, xk, dk) do
-     @doc """
-     Armijo strategy
-     """   
+        @doc """
+        Armijo strategy.
+
+        ## Parameters:
+
+        - grad: gradient after grad
+        - f: function handler
+        - xk: x
+        - d: descent  
+        """   
         beta = 0.5
         sigma = 0.2
         n = 0
@@ -33,9 +40,16 @@ defmodule Enlso.Base.Step do
     end
 
     def Wolfe(grad, f, xk, dk) do
-    @doc """
-    Wolfe strategy
-    """
+        @doc """
+        Wolfe strategy
+
+        ## Parameters:
+
+        - grad: gradient after grad
+        - f: function handler
+        - xk: x
+        - dk: descent
+        """
         c1 = 0.1
         c2 = 0.9
         alpha = 1

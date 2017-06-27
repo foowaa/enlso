@@ -3,18 +3,18 @@ import Enlso.Base.Grad
 alias Enlso.Base.Grad, as Grad
 import Matrix 
 defmodule Enlso.Base.Hess do
- @moduledoc """
- An implementation of auto Hessian matrix. See http://mathworld.wolfram.com/Hessian.html
- """
-    defp finiteHess(f, x) do
-    @doc """
-    finite differencing, see: http://mathworld.wolfram.com/FiniteDifference.html
-
-    ## Parameters:
-
-       - f: function handler
-       - x: list, the diff point
+    @moduledoc """
+    An implementation of auto Hessian matrix. See http://mathworld.wolfram.com/Hessian.html
     """
+    defp finiteHess(f, x) do
+        @doc """
+        finite differencing, see: http://mathworld.wolfram.com/FiniteDifference.html
+
+        ## Parameters:
+
+        - f: function handler
+        - x: list, the diff point
+        """
         p = length(x)
         mu = 2 * Math.sqrt(1.0e-12) * (1+Grad.norm(x))
         diff = List.duplicate(0.0, p) |> List.duplicate(p)
@@ -35,21 +35,21 @@ defmodule Enlso.Base.Hess do
                     Enum.map(fn(x) -> x|>Enum.at(0)|>Enum.zip(x|>Enum.at(1))|>Enum.map(fn(x)-> elem(x,0)-elem(x,1) end) end)
         hes1 = List.duplicate(0, p) |> List.duplicate(p)
         for i <- 0..p-1, do: hes|>List.replace_at(i, Enum.at(h,i)|>Enum.zip(mu_list)|>Enum.map(fn(x) -> elem(x,0)/elem(x,1) end))
-        hes2 = hes|>Matrix.add(Matrix.transpose(hes))
+        hes2 = hes1|>Matrix.add(Matrix.transpose(hes1))
         two = List.duplicate(0.50, p)
         hessian = List.duplicate(0, p) |> List.duplicate(p)
         for i<- 0..p-1, do: hessian|>List.replace_at(i, Enum.at(hes2, i)|>Enum.zip(two)|>Enum.map(fn(x) -> elem(x, 0)*elem(x, 1) end))
     end
 
     defp centralHess(f, x) do
-    @doc """
-    central differencing, see: http://mathworld.wolfram.com/CentralDifference.html 
+        @doc """
+        central differencing, see: http://mathworld.wolfram.com/CentralDifference.html 
 
-    ## Parameters:
-       
-       - f: function handler
-       - x: list, the diff point 
-    """    
+        ## Parameters:
+        
+        - f: function handler
+        - x: list, the diff point 
+        """    
         p = length(x)
         mu = 2 * Math.sqrt(1.0e-12) * (1+Grad.norm(x))
         diff1 = List.duplicate(0.0, p) |> List.duplicate(p)
@@ -74,30 +74,30 @@ defmodule Enlso.Base.Hess do
                     Enum.map(fn(x) -> x|>Enum.at(0)|>Enum.zip(x|>Enum.at(1))|>Enum.map(fn(x)-> elem(x,0)-elem(x,1) end) end)
         hes1 = List.duplicate(0, p) |> List.duplicate(p)
         for i <- 0..p-1, do: hes1|>List.replace_at(i,Enum.at(h,i)|>Enum.zip(mu_list)|>Enum.map(fn(x) -> elem(x,0)/elem(x,1) end))
-        hes2 = hes|>Matrix.add(Matrix.transpose(hes))
+        hes2 = hes1|>Matrix.add(Matrix.transpose(hes1))
         two = List.duplicate(0.50, p)
         hessian = List.duplicate(0, p) |> List.duplicate(p)
         for i<- 0..p-1, do: hessian|>List.replace_at(i, Enum.at(hes2, i)|>Enum.zip(two)|>Enum.map(fn(x) -> elem(x, 0)*elem(x, 1) end))
     end
 
     def hess!(x, f, type \\ "central") do
-    @doc """
-    the main part
+        @doc """
+        the main part
 
-    ## Parameters:
+        ## Parameters:
 
-       - x: list, the diff point
-       - f: function handler
-       - type: string which determines the method to calculate the diff, default is central.
-    
-    ## Examples
+        - x: list, the diff point
+        - f: function handler
+        - type: string which determines the method to calculate the diff, default is central.
+        
+        ## Examples
 
-    iex> f = fn(x) x|>Enum.zip(x)|>Enum.map(fn(x)->elem(x,0)*elem(x,1) end)|>Enum.sum
-    iex> Enlso.Base.Hess.hess!(f, [1,2,3], "finite")
-    [[2.00,0.00,0.00],[0.00,2.00,0.00],[0.00,0.00,2.00]]
-    iex> Enlso.Base.Hess.hess!(f, [1,2,3])
-    [[2.00,0.00,0.00],[0.00,2.00,0.00],[0.00,0.00,2.00]]
-    """    
+        iex> f = fn(x) x|>Enum.zip(x)|>Enum.map(fn(x)->elem(x,0)*elem(x,1) end)|>Enum.sum
+        iex> Enlso.Base.Hess.hess!(f, [1,2,3], "finite")
+        [[2.00,0.00,0.00],[0.00,2.00,0.00],[0.00,0.00,2.00]]
+        iex> Enlso.Base.Hess.hess!(f, [1,2,3])
+        [[2.00,0.00,0.00],[0.00,2.00,0.00],[0.00,0.00,2.00]]
+        """    
         cond do
             String.equivalent?(type, "central") ->
                 hessian = centralHess(f, x)

@@ -12,9 +12,16 @@ defmodule Enlso.Alg.SecondOrder do
     second order optimization: Newton method
     """
     def newton(f, x0, nmax \\ 5000, epsilon \\ 1.0e-5) do
-    @doc """
-    Newton method. See https://en.wikipedia.org/wiki/Newton%27s_method_in_optimization
-    """
+        @doc """
+        Newton method. See https://en.wikipedia.org/wiki/Newton%27s_method_in_optimization
+
+        ## Parameters:
+
+        - f: function handler
+        - x0: initial point
+        - nmax: the max round
+        - epsilon: the break condition
+        """
         rho = 0.0
         n = 0
         grad = Grad.grad(x0, f)
