@@ -1,20 +1,12 @@
-alias :math, as Math 
+alias :math, as: Math 
 import Enlso.Base.Grad 
-alias Enlso.Base.Grad, as Grad
+alias Enlso.Base.Grad, as: Grad
 import Matrix 
 defmodule Enlso.Base.Hess do
     @moduledoc """
     An implementation of auto Hessian matrix. See http://mathworld.wolfram.com/Hessian.html
     """
     defp finiteHess(f, x) do
-        @doc """
-        finite differencing, see: http://mathworld.wolfram.com/FiniteDifference.html
-
-        ## Parameters:
-
-        - f: function handler
-        - x: list, the diff point
-        """
         p = length(x)
         mu = 2 * Math.sqrt(1.0e-12) * (1+Grad.norm(x))
         diff = List.duplicate(0.0, p) |> List.duplicate(p)
@@ -34,22 +26,14 @@ defmodule Enlso.Base.Hess do
         h = diff |> Enum.zip(rep_g) |> Enum.map(fn(x) -> Tuple.to_list(x) end) |> 
                     Enum.map(fn(x) -> x|>Enum.at(0)|>Enum.zip(x|>Enum.at(1))|>Enum.map(fn(x)-> elem(x,0)-elem(x,1) end) end)
         hes1 = List.duplicate(0, p) |> List.duplicate(p)
-        for i <- 0..p-1, do: hes|>List.replace_at(i, Enum.at(h,i)|>Enum.zip(mu_list)|>Enum.map(fn(x) -> elem(x,0)/elem(x,1) end))
+        for i <- 0..p-1, do: hes1|>List.replace_at(i, Enum.at(h,i)|>Enum.zip(mu_list)|>Enum.map(fn(x) -> elem(x,0)/elem(x,1) end))
         hes2 = hes1|>Matrix.add(Matrix.transpose(hes1))
         two = List.duplicate(0.50, p)
         hessian = List.duplicate(0, p) |> List.duplicate(p)
         for i<- 0..p-1, do: hessian|>List.replace_at(i, Enum.at(hes2, i)|>Enum.zip(two)|>Enum.map(fn(x) -> elem(x, 0)*elem(x, 1) end))
     end
 
-    defp centralHess(f, x) do
-        @doc """
-        central differencing, see: http://mathworld.wolfram.com/CentralDifference.html 
-
-        ## Parameters:
-        
-        - f: function handler
-        - x: list, the diff point 
-        """    
+    defp centralHess(f, x) do   
         p = length(x)
         mu = 2 * Math.sqrt(1.0e-12) * (1+Grad.norm(x))
         diff1 = List.duplicate(0.0, p) |> List.duplicate(p)
@@ -79,10 +63,10 @@ defmodule Enlso.Base.Hess do
         hessian = List.duplicate(0, p) |> List.duplicate(p)
         for i<- 0..p-1, do: hessian|>List.replace_at(i, Enum.at(hes2, i)|>Enum.zip(two)|>Enum.map(fn(x) -> elem(x, 0)*elem(x, 1) end))
     end
-
-    def hess!(x, f, type \\ "central") do
         @doc """
-        the main part
+        There are 2 types of difference methods: finite AND central.
+        finite differencing, see: http://mathworld.wolfram.com/FiniteDifference.html
+        central differencing, see: http://mathworld.wolfram.com/CentralDifference.html
 
         ## Parameters:
 
@@ -97,14 +81,16 @@ defmodule Enlso.Base.Hess do
         [[2.00,0.00,0.00],[0.00,2.00,0.00],[0.00,0.00,2.00]]
         iex> Enlso.Base.Hess.hess!(f, [1,2,3])
         [[2.00,0.00,0.00],[0.00,2.00,0.00],[0.00,0.00,2.00]]
-        """    
+        """  
+    def hess!(x, f, type \\ "central") do
+  
         cond do
             String.equivalent?(type, "central") ->
                 hessian = centralHess(f, x)
             String.equivalent?(type, "finite") ->
                 hessian = finiteHess(f, x)
-            _ ->
-                raise ArgumentError, message:"type is invalid"
+            true ->
+                raise ArgumentError, message: "type is invalid"
         end
     end
 end

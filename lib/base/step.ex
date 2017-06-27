@@ -1,55 +1,55 @@
-alias :math, as Math
-alias :random, as Random
+alias :math, as: Math
+alias :random, as: Random
 import Enlso.Base.Grad
-alias Enlso.Base.Grad, as Grad
+alias Enlso.Base.Grad, as: Grad
 defmodule Enlso.Base.Step do
      @moduledoc """
     An implementation of step choosing. See https://en.wikipedia.org/wiki/Wolfe_conditions AND 
                                             https://en.wikipedia.org/wiki/Backtracking_line_search
     """
-    def Armijo(grad, f, xk, dk) do
-        @doc """
-        Armijo strategy.
 
-        ## Parameters:
+    @doc """
+    Armijo strategy.
 
-        - grad: gradient after grad
-        - f: function handler
-        - xk: x
-        - d: descent  
-        """   
+    ## Parameters:
+
+    - grad: gradient after grad
+    - f: function handler
+    - xk: x
+    - d: descent  
+    """
+    def armijo(grad, f, xk, dk) do
+   
         beta = 0.5
         sigma = 0.2
         n = 0
         smax = 20
-        alpha = Armijo_helper(grad, f, xk, dk, n, smax, beta, sigma);
+        alpha = armijo_helper(grad, f, xk, dk, n, smax, beta, sigma);
     end
 
-    defp Armijo_helper(grad, f, xk, dk, n, smax, beta, sigma) do
-        @doc """
-        Armijo helper function for recursion
-        """
+    defp armijo_helper(grad, f, xk, dk, n, smax, beta, sigma) do
         y1 = beta|>Math.pow(n)|>List.duplicate(length(xk))|>Enum.zip(dk)|>Enum.map(fn(x) -> elem(x, 0)*elem(x, 1) end)|>
-             |>Enum.zip(xk)|>Enum.map(fn(x) -> elem(x, 0)+elem(x, 1) end)|>f
-        y2 = beta|>Math.pow(n) * sigma * grad|>Enum.zip(dk)|>Enum.map(fn(x) -> elem(x, 0)*elem(x, 1) end)|>Enum.sum
+             Enum.zip(xk)|>Enum.map(fn(x) -> elem(x, 0)+elem(x, 1) end)|>f.()
+        y2 = (beta|>Math.pow(n)) * sigma * (grad|>Enum.zip(dk)|>Enum.map(fn(x) -> elem(x, 0)*elem(x, 1) end)|>Enum.sum)
         n = n + 1
-        if y1 > f(xk)+y2 && n<smax do  
-            Armijo_helper(grad, f, xk, dk, n, smax, beta, sigma)
+        if y1 > f.(xk)+y2 && n<smax do  
+            armijo_helper(grad, f, xk, dk, n, smax, beta, sigma)
         end
         alpha = Math.pow(beta, n)
     end
 
-    def Wolfe(grad, f, xk, dk) do
-        @doc """
-        Wolfe strategy
+    @doc """
+    Wolfe strategy
 
-        ## Parameters:
+    ## Parameters:
 
-        - grad: gradient after grad
-        - f: function handler
-        - xk: x
-        - dk: descent
-        """
+    - grad: gradient after grad
+    - f: function handler
+    - xk: x
+    - dk: descent
+    """
+    def wolfe(grad, f, xk, dk) do
+
         c1 = 0.1
         c2 = 0.9
         alpha = 1
@@ -57,26 +57,26 @@ defmodule Enlso.Base.Step do
         b = 1.0e20
         n = 0
         smax = 20
-        alpha = Wolfe_helper(grad, f, xk, dk, n, c1, c2, a, b)
+        alpha = wolfe_helper(grad, f, xk, dk, n, c1, c2, a, b, alpha, smax)
     end
 
-    defp Wolfe_helper(grad, f, xk, dk, n, c1, c2, a, b) do
+    defp wolfe_helper(grad, f, xk, dk, n, c1, c2, a, b, alpha, smax) do
         x1 = alpha |> List.duplicate(length(dk)) |> Enum.zip(dk) |>
                 Enum.map(fn(x) -> elem(x, 0)*elem(x, 1) end) |>
-                Enum.zip(x) |> Enum.map(fn(x) -> elem(x, 0)+elem(x, 1) end)
-        y2 = c1 * alpha * grad|>Enum.zip(dk)|>Enum.map(fn(x) -> elem(x, 0)*elem(x, 1) end)|>Enum.sum
-        y3 = c2 * grad|>Enum.zip(dk)|>Enum.map(fn(x) -> elem(x, 0)*elem(x, 1) end)|>Enum.sum
-        if f(x1) > f(xk)+y2 && n < smax do
+                Enum.zip(xk) |> Enum.map(fn(x) -> elem(x, 0)+elem(x, 1) end)
+        y2 = c1 * alpha * (grad|>Enum.zip(dk)|>Enum.map(fn(x) -> elem(x, 0)*elem(x, 1) end)|>Enum.sum)
+        y3 = c2 * (grad|>Enum.zip(dk)|>Enum.map(fn(x) -> elem(x, 0)*elem(x, 1) end)|>Enum.sum)
+        if f.(x1) > f.(xk)+y2 && n < smax do
             b = alpha
             alpha = (alpha+a)/2
             n = n+1
-            Wolfe_helper(grad, f, xk, dk, n, c1, c2, a, b)
+            wolfe_helper(grad, f, xk, dk, n, c1, c2, a, b, alpha, smax)
         end 
         if Grad.grad(x1, f)|>Enum.zip(dk)|>Enum.map(fn(x) -> elem(x, 0)*elem(x, 1) end)|>Enum.sum < y3 && n < smax do
             a = alpha
             alpha = min(2*alpha, (b+alpha)/2)
             n = n+1
-            Wolfe_helper(grad, f, xk, dk, n, c1, c2, a, b)
+            wolfe_helper(grad, f, xk, dk, n, c1, c2, a, b, alpha, smax)
         end
         if alpha > 1 do
             # http://www.cultivatehq.com/posts/pseudo-random-number-generator-in-elixir/
