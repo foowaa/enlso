@@ -7,7 +7,8 @@ defmodule Enlso.Mixfile do
      elixir: "~> 1.4",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
-     deps: deps()]
+     deps: deps(),
+     docs: [extras: []]]
   end
 
   # Configuration for the OTP application
@@ -28,6 +29,7 @@ defmodule Enlso.Mixfile do
   #
   # Type "mix help deps" for more examples and options
   defp deps do
-    [{ :matrix, "~> 0.3.0" }]
+    [{ :matrix, "~> 0.3.0" },
+    {:ex_doc, "~> 0.14", only: :dev}]
   end
 end
