@@ -10,13 +10,13 @@ defmodule Enlso.Base.Hess do
         p = length(x)
         mu = 2 * Math.sqrt(1.0e-12) * (1+Grad.norm(x))
         diff = List.duplicate(0.0, p) |> List.duplicate(p)
-        g = x|>Grad.grad(f, "finite")
+        g = x|>Grad.grad!(f, "finite")
         for j <- 0..p-1 do
             e_j = List.duplicate(0.0, p)
             e_j|>List.replace_at(j, 1.0)
             temp = mu |> List.duplicate(p) |> Enum.zip(e_j) |>
                 Enum.map(fn(x) -> elem(x, 0)*elem(x, 1) end) |>
-                Enum.zip(x) |> Enum.map(fn(x) -> elem(x, 0)+elem(x, 1) end) |> Grad.grad(f,"finite")
+                Enum.zip(x) |> Enum.map(fn(x) -> elem(x, 0)+elem(x, 1) end) |> Grad.grad!(f,"finite")
             for i <- 0..p-1, do: diff |> Enum.at(i) |> List.replace_at(j, temp|>Enum.at(i))
         end
         rep_g = List.duplicate(0, p) |> List.duplicate(p)
@@ -44,10 +44,10 @@ defmodule Enlso.Base.Hess do
             e_j|>List.replace_at(j, 1.0)
             g1 = mu |> List.duplicate(p) |> Enum.zip(e_j) |>
                 Enum.map(fn(x) -> elem(x, 0)*elem(x, 1) end) |>
-                Enum.zip(x) |> Enum.map(fn(x) -> elem(x, 0)+elem(x, 1) end) |> Grad.grad(f)         
+                Enum.zip(x) |> Enum.map(fn(x) -> elem(x, 0)+elem(x, 1) end) |> Grad.grad!(f)         
             g2 = mu |> List.duplicate(p) |> Enum.zip(e_j) |>
                 Enum.map(fn(x) -> elem(x, 0)*elem(x, 1) end) |>
-                Enum.zip(x) |> Enum.map(fn(x) -> elem(x, 1)-elem(x, 0) end) |> Grad.grad(f)
+                Enum.zip(x) |> Enum.map(fn(x) -> elem(x, 1)-elem(x, 0) end) |> Grad.grad!(f)
             for i <- 0..p-1 do
                 diff1 |> Enum.at(i) |> List.replace_at(j, g1|>Enum.at(i))
                 diff2 |> Enum.at(i) |> List.replace_at(j, g2|>Enum.at(i))

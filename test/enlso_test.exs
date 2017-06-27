@@ -1,8 +1,6 @@
 defmodule EnlsoTest do
   use ExUnit.Case
-  doctest Enlso
+  doctest Enlso.Base.Grad
 
-  test "the truth" do
-    assert 1 + 1 == 2
-  end
+
 end

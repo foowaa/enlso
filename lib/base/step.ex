@@ -17,6 +17,12 @@ defmodule Enlso.Base.Step do
     - f: function handler
     - xk: x
     - d: descent  
+
+    ## Example
+
+       iex> f = fn(x) x|>Enum.zip(x)|>Enum.map(fn(x)->elem(x,0)*elem(x,1) end)|>Enum.sum
+       iex> Enlso.Step.armijo(f, [2,4,6],[1,2,3],[-1,-1,-1])
+       1.00
     """
     def armijo(grad, f, xk, dk) do
    
@@ -47,6 +53,12 @@ defmodule Enlso.Base.Step do
     - f: function handler
     - xk: x
     - dk: descent
+
+    ## Example
+
+       iex> f = fn(x) x|>Enum.zip(x)|>Enum.map(fn(x)->elem(x,0)*elem(x,1) end)|>Enum.sum
+       iex> Enlso.Step.wolfe(f, [2,4,6],[1,2,3],[-1,-1,-1])
+       1.00
     """
     def wolfe(grad, f, xk, dk) do
 
@@ -72,7 +84,7 @@ defmodule Enlso.Base.Step do
             n = n+1
             wolfe_helper(grad, f, xk, dk, n, c1, c2, a, b, alpha, smax)
         end 
-        if Grad.grad(x1, f)|>Enum.zip(dk)|>Enum.map(fn(x) -> elem(x, 0)*elem(x, 1) end)|>Enum.sum < y3 && n < smax do
+        if Grad.grad!(x1, f)|>Enum.zip(dk)|>Enum.map(fn(x) -> elem(x, 0)*elem(x, 1) end)|>Enum.sum < y3 && n < smax do
             a = alpha
             alpha = min(2*alpha, (b+alpha)/2)
             n = n+1

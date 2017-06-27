@@ -55,7 +55,7 @@ defmodule Enlso.Alg.FirstOrder do
         grad = Grad.grad!(x0, f)
         d = grad|>Enum.map(&(-1*&1))
         n = 0
-        result = gd_helper(f, x0, nmax, epsilon, d, grad, n)
+        result = cg_helper(f, x0, nmax, epsilon, d, grad, n)
     end
 
     defp cg_helper(f, x0, nmax, epsilon, d, grad, n) do
@@ -72,7 +72,7 @@ defmodule Enlso.Alg.FirstOrder do
                 Enum.zip(x0) |> Enum.map(fn(x) -> elem(x, 0)-elem(x, 1) end)
             n = n+1
             grad = temp
-            gd_helper(f, x0, nmax, epsilon, d, gard, n)
+            cg_helper(f, x0, nmax, epsilon, d, grad, n)
         end
         result = {x0, f.(x0)}
     end
@@ -88,7 +88,6 @@ defmodule Enlso.Alg.FirstOrder do
     - epsilon: the break condition
     """
     def bfgs(f, x0, nmax \\ 5000, epsilon \\ 1.0e-5) do
-        x = List.duplicate(0, length(x0))
         # https://github.com/twist-vector/elixir-matrix
         b_matrix = Matrix.indent(length(x0))
         grad = Grad.grad!(x0, f)

@@ -65,9 +65,9 @@ defmodule Enlso.Base.Grad do
     - f: function handler
     - type: string which determines the method to calculate the diff, default is central.
 
-    ## Examples
+    ## Example
 
-    iex> f = fn(x) x|>Enum.zip(x)|>Enum.map(fn(x)->elem(x,0)*elem(x,1) end)|>Enum.sum
+    iex> f = fn(x) -> x|>Enum.zip(x)|>Enum.map(fn(x)->elem(x,0)*elem(x,1) end)|>Enum.sum end
     iex> Enlso.Base.Grad.grad!(f, [1,2,3], "finite")
     [2.00,4.00,6.00]
     iex> Enlso.Base.Grad.grad!(f, [1,2,3])
