@@ -1,6 +1,6 @@
 # Enlso
 
-**TODO: Add description**
+**Elixir Numeric Linear Search Optimization**
 
 ## Installation
 
