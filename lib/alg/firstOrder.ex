@@ -9,7 +9,7 @@ defmodule Enlso.Alg.FirstOrder do
     """
     def gd(f, x0, nmax \\ 5000, epsilon \\ 1.0e-5) do
     @doc """
-    naive gradient descet
+    naive gradient descet. See https://en.wikipedia.org/wiki/Gradient_descent
     """
         grad = Grad.grad!(x0, f)
         d = grad|>Enum.map(&(-1*&1))
@@ -32,7 +32,7 @@ defmodule Enlso.Alg.FirstOrder do
 
     def cg(f, x0, nmax \\ 5000, epsilon \\ 1.0e-5) do
     @doc """
-    conjugate gradient
+    conjugate gradient. See https://en.wikipedia.org/wiki/Conjugate_gradient_method
     """
         grad = Grad.grad!(x0, f)
         d = grad|>Enum.map(&(-1*&1))
@@ -61,7 +61,7 @@ defmodule Enlso.Alg.FirstOrder do
 
     def bfgs(f, x0, nmax \\ 5000, epsilon \\ 1.0e-5) do
     @doc """
-    Broyden-Fletcher-Goldfarb-Shanno (BFGS) 
+    Broyden-Fletcher-Goldfarb-Shanno (BFGS). See https://en.wikipedia.org/wiki/Broyden–Fletcher–Goldfarb–Shanno_algorithm
     """  
         x = List.duplicate(0, length(x0))
         # https://github.com/twist-vector/elixir-matrix

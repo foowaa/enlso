@@ -2,12 +2,12 @@ alias :math, as: Math
 defmodule Enlso.Base.Grad do
 
  @moduledoc """
- An implementation of auto grad
+ An implementation of auto grad. See http://mathworld.wolfram.com/Gradient.html
  """
 
     defp finiteDiff(f, x) do
     @doc """
-    finite differencing, see: https://en.wikipedia.org/wiki/Finite_difference
+    finite differencing, see: http://mathworld.wolfram.com/FiniteDifference.html
 
     ## Parameters
 
@@ -84,9 +84,9 @@ defmodule Enlso.Base.Grad do
     ## Examples
 
     iex> f = fn(x) x|>Enum.zip(x)|>Enum.map(fn(x)->elem(x,0)*elem(x,1) end)|>Enum.sum
-    iex> Enlso.Base.Grad.grad(f, [1,2,3], "finite")
+    iex> Enlso.Base.Grad.grad!(f, [1,2,3], "finite")
     [2.00,4.00,6.00]
-    iex> Enlso.Base.Grad.grad(f, [1,2,3])
+    iex> Enlso.Base.Grad.grad!(f, [1,2,3])
     [2.00,4.00,6.00]
     """
         cond do

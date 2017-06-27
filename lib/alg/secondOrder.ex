@@ -13,7 +13,7 @@ defmodule Enlso.Alg.SecondOrder do
     """
     def newton(f, x0, nmax \\ 5000, epsilon \\ 1.0e-5) do
     @doc """
-    Newton method
+    Newton method. See https://en.wikipedia.org/wiki/Newton%27s_method_in_optimization
     """
         rho = 0.0
         n = 0

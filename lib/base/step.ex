@@ -4,7 +4,8 @@ import Enlso.Base.Grad
 alias Enlso.Base.Grad, as Grad
 defmodule Enlso.Base.Step do
      @moduledoc """
-    An implementation of step choosing 
+    An implementation of step choosing. See https://en.wikipedia.org/wiki/Wolfe_conditions AND 
+                                            https://en.wikipedia.org/wiki/Backtracking_line_search
     """
     def Armijo(grad, f, xk, dk) do
      @doc """

@@ -4,11 +4,11 @@ alias Enlso.Base.Grad, as Grad
 import Matrix 
 defmodule Enlso.Base.Hess do
  @moduledoc """
- An implementation of auto Hessian matrix
+ An implementation of auto Hessian matrix. See http://mathworld.wolfram.com/Hessian.html
  """
     defp finiteHess(f, x) do
     @doc """
-    finite differencing, see: https://en.wikipedia.org/wiki/Finite_difference
+    finite differencing, see: http://mathworld.wolfram.com/FiniteDifference.html
 
     ## Parameters:
 
